@@ -30,6 +30,9 @@ public class User {
     @Column(name = "mobile_number",nullable = false,unique = true)
     private String mobileNumber;
 
+    @Column(name = "password",nullable = false)
+    private String password;
+
     @Column(name = "role",nullable = false)
     private Role role=Role.USER;
 
@@ -39,8 +42,8 @@ public class User {
     @Column(name = "updated_at",nullable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Token> tokens=new ArrayList<>();
+//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+//    private List<Token> tokens=new ArrayList<>();
 
     @PrePersist
     protected void onCreate(){

@@ -32,8 +32,8 @@ public class Token {
     @Column(name = "expired",nullable = false)
     private boolean expired;
 
-    @ManyToOne
-    @JoinColumn(name = "userId",nullable = false)
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "userId",nullable = false)
+//    private User user;
 
 }
