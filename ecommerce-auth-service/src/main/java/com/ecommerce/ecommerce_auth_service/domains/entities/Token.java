@@ -27,13 +27,13 @@ public class Token {
     private TokenType tokenType=TokenType.BEARER;
 
     @Column(name = "revoked",nullable = false)
-    private boolean revoked;
+    private boolean revoked=false;
 
     @Column(name = "expired",nullable = false)
-    private boolean expired;
+    private boolean expired=false;
 
-//    @ManyToOne
-//    @JoinColumn(name = "userId",nullable = false)
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "userId",nullable = false)
+    private User user;
 
 }

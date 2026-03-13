@@ -10,3 +10,11 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+application:
+  security:
+    jwt:
+      secrete-key: abcdefghijklmnopqrstuvwxyz1234567890
+      expiration: 987654321
+      refresh-token:
+        expiration: 897654321
+

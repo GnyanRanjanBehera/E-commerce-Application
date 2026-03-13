@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 
 @Getter
@@ -14,7 +17,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements  UserDetails  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,8 +45,8 @@ public class User {
     @Column(name = "updated_at",nullable = false)
     private LocalDateTime updatedAt;
 
-//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
-//    private List<Token> tokens=new ArrayList<>();
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Token> tokens=new ArrayList<>();
 
     @PrePersist
     protected void onCreate(){
@@ -56,4 +59,33 @@ public class User {
         updatedAt=LocalDateTime.now();
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getUsername() {
+        return mobileNumber;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

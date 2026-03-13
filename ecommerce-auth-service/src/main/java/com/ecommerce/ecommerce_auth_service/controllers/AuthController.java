@@ -17,8 +17,9 @@ public class AuthController {
 
     @PostMapping("/signUp")
     public ResponseEntity<UserDto> signUp(@RequestBody UserDto userDto){
-        UserDto user = authService.signUp(userDto);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+//        UserDto user = authService.signUp(userDto);
+//        return new ResponseEntity<>(user, HttpStatus.OK);
+        return null;
     }
 
     @PostMapping("/signIn")
@@ -26,8 +27,9 @@ public class AuthController {
             @RequestParam(value = "mobileNumber") String mobileNUmber,
             @RequestParam(value = "password") String password
             ){
-        UserDto userDto = authService.signIn(mobileNUmber, password);
-        return new ResponseEntity<>(userDto,HttpStatus.OK);
+//        UserDto userDto = authService.signIn(mobileNUmber, password);
+//        return new ResponseEntity<>(userDto,HttpStatus.OK);
+        return null;
     }
 
 
