@@ -3,19 +3,20 @@ import com.ecommerce.ecommerce_auth_service.domains.dtos.AuthResponse;
 import com.ecommerce.ecommerce_auth_service.domains.dtos.UserDto;
 import com.ecommerce.ecommerce_auth_service.domains.entities.Token;
 import com.ecommerce.ecommerce_auth_service.domains.entities.User;
+import com.ecommerce.ecommerce_auth_service.domains.enums.Role;
 import com.ecommerce.ecommerce_auth_service.domains.enums.TokenType;
 import com.ecommerce.ecommerce_auth_service.exceptions.ResourceNotFoundException;
 import com.ecommerce.ecommerce_auth_service.repositories.TokenRepo;
 import com.ecommerce.ecommerce_auth_service.repositories.UserRepo;
 import com.ecommerce.ecommerce_auth_service.security.JwtService;
 import com.ecommerce.ecommerce_auth_service.services.AuthService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
@@ -35,46 +36,45 @@ public class AuthServiceImpl implements AuthService {
                 .mobileNumber(userDto.getMobileNumber())
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
+                .role(Role.USER)
                 .build();
-        Token token = Token.builder().accessToken("").refreshToken("").user(user).build();
-        tokenRepo.save(token);
-        AuthResponse user1 = AuthResponse.builder().accessToken("").refreshToken("").user(mapper.map(user, UserDto.class)).build();
-        return user1;
+        User saveUser = userRepo.save(user);
+        return generateAuthResponse(saveUser);
     }
 
     @Override
     public AuthResponse signIn(String mobileNumber, String password) {
         User user = userRepo.findByMobileNumber(mobileNumber).orElseThrow(() -> new ResourceNotFoundException("user not found"));
-//        return mapper.map(user,UserDto.class);
-        return null;
+        return generateAuthResponse(user);
     }
 
 
-//    @Override
-//    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException, IOException {
-//        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-//        final String refreshToken;
-//        final String mobileNumber;
-//        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-//            return;
-//        }
-//        refreshToken = authHeader.substring(7);
-//        mobileNumber = jwtService.extractUsername(refreshToken);
-//        if (mobileNumber != null) {
-//            var user = this.userRepository.findByMobileNumber(mobileNumber)
-//                    .orElseThrow();
-//            if (jwtService.isTokenValid(refreshToken, user)) {
-//                var accessToken = jwtService.generateToken(user);
-//                revokeAllUserTokens(user);
-//                saveUserToken(user, accessToken);
-//                var authResponse = AuthenticationResponse.builder()
-//                        .accessToken(accessToken)
-//                        .refreshToken(refreshToken)
-//                        .build();
-//                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
-//            }
-//        }
-//    }
+
+    @Override
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String refreshToken;
+        final String mobileNumber;
+        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+            return;
+        }
+        refreshToken = authHeader.substring(7);
+        mobileNumber = jwtService.extractUsername(refreshToken);
+        if (mobileNumber != null) {
+            var user = this.userRepo.findByMobileNumber(mobileNumber)
+                    .orElseThrow();
+            if (jwtService.isTokenValid(refreshToken, user)) {
+                var accessToken = jwtService.generateToken(user);
+                revokeAllUserTokens(user);
+                saveUserToken(user, accessToken);
+                var authResponse = AuthResponse.builder()
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build();
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+            }
+        }
+    }
 
 
     private AuthResponse generateAuthResponse(User user) {
@@ -82,7 +82,6 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
-
         return AuthResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -105,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
     private void saveUserToken(User user, String jwtToken) {
         var token = Token.builder()
                 .user(user)
-                .accessToken(jwtToken)
+                .token(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .expired(false)
                 .revoked(false)

@@ -16,16 +16,24 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
     private final UserDetailsService userDetailsService;
 
-    private final TokenRepo tokenRepo;
+    private final TokenRepo tokenRepository;
 
+    public JwtAuthenticationFilter(
+            JwtService jwtService,
+            UserDetailsService userDetailsService,
+            TokenRepo tokenRepository
 
+    ){
+        this.jwtService=jwtService;
+        this.tokenRepository=tokenRepository;
+        this.userDetailsService=userDetailsService;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -48,7 +56,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         userEmail = jwtService.extractUsername(jwt);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            var isTokenValid = tokenRepo.findByToken(jwt)
+            var isTokenValid = tokenRepository.findByToken(jwt)
 
                     .map(t -> !t.isExpired() && !t.isRevoked())
                     .orElse(false);
@@ -69,4 +77,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
 

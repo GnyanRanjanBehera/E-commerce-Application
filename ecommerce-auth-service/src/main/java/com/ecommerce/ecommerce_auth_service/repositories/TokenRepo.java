@@ -1,9 +1,8 @@
 package com.ecommerce.ecommerce_auth_service.repositories;
-import com.ecommerce.ecommerce_auth_service.domains.entities.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
+import com.ecommerce.ecommerce_auth_service.domains.entities.Token;
 import java.util.List;
 import java.util.Optional;
 
