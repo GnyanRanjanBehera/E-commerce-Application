@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepo extends JpaRepository<User,Integer> {
     Optional<User> findByMobileNumber(String mobileNumber);
+    Optional<User> findByEmail(String email);
+//    Optional<User> findByMobileNumberOREmail(String mobileNumber,String email);
 }

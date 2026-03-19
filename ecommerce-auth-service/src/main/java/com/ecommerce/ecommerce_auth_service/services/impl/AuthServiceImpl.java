@@ -15,10 +15,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @RequiredArgsConstructor
@@ -28,14 +30,23 @@ public class AuthServiceImpl implements AuthService {
     final private TokenRepo tokenRepo;
     final private ModelMapper mapper;
     final private JwtService jwtService;
+    final private PasswordEncoder passwordEncoder;
 
 
     @Override
     public AuthResponse signUp(UserDto userDto) {
+        Optional<User> isExistMobileUser = userRepo.findByMobileNumber(userDto.getMobileNumber());
+        if(isExistMobileUser.isPresent()){
+            throw new ResourceNotFoundException("This mobile number is exist !");
+        }
+        Optional<User> isExistEmailUser = userRepo.findByEmail(userDto.getEmail());
+        if(isExistEmailUser.isPresent()){
+            throw new ResourceNotFoundException("This email is exist !");
+        }
         User user = User.builder().name(userDto.getName())
                 .mobileNumber(userDto.getMobileNumber())
                 .email(userDto.getEmail())
-                .password(userDto.getPassword())
+                .password(passwordEncoder.encode(userDto.getPassword()))
                 .role(Role.USER)
                 .build();
         User saveUser = userRepo.save(user);
@@ -44,7 +55,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse signIn(String mobileNumber, String password) {
-        User user = userRepo.findByMobileNumber(mobileNumber).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        User user = userRepo.findByMobileNumber(mobileNumber).orElseThrow(() -> new ResourceNotFoundException("user name and password doesn't match"));
+        boolean matches = passwordEncoder.matches(password, user.getPassword());
+        if(!matches){
+            throw  new ResourceNotFoundException("user name and password doesn't match");
+        }
         return generateAuthResponse(user);
     }
 

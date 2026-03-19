@@ -5,6 +5,7 @@ import com.ecommerce.ecommerce_auth_service.domains.dtos.AuthResponse;
 import com.ecommerce.ecommerce_auth_service.domains.dtos.UserDto;
 import com.ecommerce.ecommerce_auth_service.services.AuthService;
 import jakarta.servlet.http.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class AuthController {
     final private AuthService authService;
 
     @PostMapping("/signUp")
-    public ResponseEntity<AuthResponse> signUp(@RequestBody UserDto userDto){
+    public ResponseEntity<AuthResponse> signUp(@Valid @RequestBody UserDto userDto){
         AuthResponse authResponse = authService.signUp(userDto);
         return new ResponseEntity<>(authResponse, HttpStatus.OK);
 
