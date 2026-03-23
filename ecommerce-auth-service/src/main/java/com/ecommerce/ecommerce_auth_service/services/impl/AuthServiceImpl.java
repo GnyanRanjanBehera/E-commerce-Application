@@ -10,6 +10,7 @@ import com.ecommerce.ecommerce_auth_service.repositories.TokenRepo;
 import com.ecommerce.ecommerce_auth_service.repositories.UserRepo;
 import com.ecommerce.ecommerce_auth_service.security.JwtService;
 import com.ecommerce.ecommerce_auth_service.services.AuthService;
+import com.ecommerce.ecommerce_auth_service.services.PermissionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     final private ModelMapper mapper;
     final private JwtService jwtService;
     final private PasswordEncoder passwordEncoder;
-
+    final private PermissionService permissionService;
 
     @Override
     public AuthResponse signUp(UserDto userDto) {
@@ -50,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
                 .role(Role.USER)
                 .build();
         User saveUser = userRepo.save(user);
+        permissionService.saveDefaultPermission(saveUser.getUserId());
         return generateAuthResponse(saveUser);
     }
 

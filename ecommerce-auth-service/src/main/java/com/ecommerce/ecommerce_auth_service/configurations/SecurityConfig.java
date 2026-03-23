@@ -51,7 +51,7 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_URLS = {
             "/api/auth/**",
-//            "/api/user/**",
+            "/api/user/**",
             "/api/permission/**",
             "/v2/api-docs",
             "/v3/api-docs",

@@ -1,8 +1,6 @@
 package com.ecommerce.ecommerce_auth_service.annotations;
-
 import com.ecommerce.ecommerce_auth_service.domains.enums.ControllerType;
 import com.ecommerce.ecommerce_auth_service.domains.enums.MethodType;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

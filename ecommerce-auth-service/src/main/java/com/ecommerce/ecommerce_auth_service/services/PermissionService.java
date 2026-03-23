@@ -5,4 +5,5 @@ import com.ecommerce.ecommerce_auth_service.domains.enums.MethodType;
 
 public interface PermissionService {
     public boolean hasAccess(String  mobileNumber, ControllerType controllerType, MethodType methodType);
+    public void saveDefaultPermission(Integer userId);
 }
