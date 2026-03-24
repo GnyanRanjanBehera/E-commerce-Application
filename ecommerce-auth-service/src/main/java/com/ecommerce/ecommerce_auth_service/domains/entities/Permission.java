@@ -26,6 +26,7 @@ public class Permission {
     private User user;
 
     @Column(name = "controller_type",nullable = false)
+    @Enumerated(EnumType.STRING)
     private ControllerType controllerType;
 
     @Column(nullable = false,name = "can_read")
