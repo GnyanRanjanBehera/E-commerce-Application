@@ -50,31 +50,20 @@ public class AuthServiceTest {
     @InjectMocks
     private AuthServiceImpl authService;
 
-    private UserDto user;
-    private AuthResponse authResponse;
+    private User user;
+    private UserDto userDto;
 
     @BeforeEach
     void setUp(){
-        user=UserDto.builder()
+        user=User.builder()
                 .userId(1)
                 .name("Test")
                 .email("test@gmail.com")
                 .mobileNumber("1234567890")
-                .password("123456")
+                .password("encodedPassword")
                 .role(Role.USER)
                 .build();
-        authResponse=AuthResponse.builder()
-                .accessToken("accessToken")
-                .refreshToken("refreshToken")
-                .user(user)
-                .build();
-
-    }
-
-    @Test
-    @DisplayName("SignIn Test")
-    void signInTest(){
-        User savedUser = User.builder()
+  userDto=UserDto.builder()
                 .userId(1)
                 .name("Test")
                 .email("test@gmail.com")
@@ -83,29 +72,26 @@ public class AuthServiceTest {
                 .role(Role.USER)
                 .build();
 
-        // ✅ Mock behavior
+
+    }
+
+    @Test
+    @DisplayName("SignIn Test")
+    void signInTest(){
         when(userRepo.findByMobileNumber(any())).thenReturn(Optional.empty());
         when(userRepo.findByEmail(any())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
-        when(userRepo.save(any())).thenReturn(savedUser); // ✅ FIXED
-
+        when(userRepo.save(any())).thenReturn(user);
         when(jwtService.generateToken(any())).thenReturn("accessToken");
         when(jwtService.generateRefreshToken(any())).thenReturn("refreshToken");
-
         when(tokenRepo.findAllValidTokenByUser(any())).thenReturn(List.of());
-        when(mapper.map(any(), eq(UserDto.class))).thenReturn(user);
-
-        // ✅ Call actual method
-        AuthResponse response = authService.signUp(user);
-
-        // ✅ Assertions
+        when(mapper.map(any(), eq(UserDto.class))).thenReturn(userDto);
+        AuthResponse response = authService.signUp(userDto);
         assertNotNull(response);
         assertEquals("accessToken", response.getAccessToken());
         assertEquals("refreshToken", response.getRefreshToken());
-
-        // ✅ Verify interactions
         verify(userRepo, times(1)).save(any());
-        verify(permissionService, times(1)).saveDefaultPermission(savedUser.getUserId());
+        verify(permissionService, times(1)).saveDefaultPermission(user.getUserId());
 
     }
 
@@ -113,42 +99,22 @@ public class AuthServiceTest {
     @Test
     @DisplayName("SignIn Success Test")
     void signInSuccessTest() {
-
-        // ✅ Create User entity
-        User savedUser = User.builder()
-                .userId(1)
-                .mobileNumber("1234567890")
-                .password("encodedPassword")
-                .build();
-
-        // ✅ Mock behavior
         when(userRepo.findByMobileNumber(any()))
-                .thenReturn(Optional.of(savedUser));
-
+                .thenReturn(Optional.of(user));
         when(passwordEncoder.matches(any(), any()))
                 .thenReturn(true);
-
         when(jwtService.generateToken(any()))
                 .thenReturn("accessToken");
-
         when(jwtService.generateRefreshToken(any()))
                 .thenReturn("refreshToken");
-
         when(tokenRepo.findAllValidTokenByUser(any()))
                 .thenReturn(List.of());
-
         when(mapper.map(any(), eq(UserDto.class)))
-                .thenReturn(user);
-
-        // ✅ Call method
-        AuthResponse response = authService.signIn("1234567890", "123456");
-
-        // ✅ Assertions
+                .thenReturn(userDto);
+        AuthResponse response = authService.signIn("1234567890", "encodedPassword");
         assertNotNull(response);
         assertEquals("accessToken", response.getAccessToken());
         assertEquals("refreshToken", response.getRefreshToken());
-
-        // ✅ Verify
         verify(userRepo, times(1)).findByMobileNumber(any());
         verify(passwordEncoder, times(1)).matches(any(), any());
     }
