@@ -1,5 +1,5 @@
 server:
-  port: 2026
+  port: 9002
 
 spring:
   application:
@@ -18,6 +18,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  config:
+    import: optional:configserver:http://localhost:9001
 
 application:
   security:

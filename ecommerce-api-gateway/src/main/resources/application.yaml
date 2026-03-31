@@ -1,0 +1,12 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: ecommerce-api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: ecommerce-auth-service
+          uri: lb://ecommerce-auth-service
+          predicates:
+            - Path=/api/auth/**,/api/user/**
