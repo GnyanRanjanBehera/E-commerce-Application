@@ -1,0 +1,35 @@
+package com.ecommerce.ecommerce_product_service.domains.enities;
+
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Entity
+@Table(name = "category")
+public class Category {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "cate_id",nullable = false,unique = true)
+    private Long cateId;
+
+    @Column(name = "name",nullable = false)
+    private String name;
+
+    @Column(name = "is_active")
+    private boolean isActive;
+
+    @ManyToOne
+    private Category parentId;
+
+    @OneToMany(mappedBy ="category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products=new ArrayList<>();
+
+}
