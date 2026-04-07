@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,10 +17,10 @@ import java.math.BigDecimal;
 public class ProductVariant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="sku")
+    @Column(name = "sku", nullable = false, unique = true)
     private String sku;
 
     @Column(name = "color")
@@ -27,13 +29,15 @@ public class ProductVariant {
     @Column(name = "size")
     private String size;
 
-    @Column(name = "price")
-    private BigDecimal price;
-
-    @Column(name = "stock")
-    private Integer stock;
-
-    @ManyToOne
-    @JoinColumn(name = "pro_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    @OneToMany(mappedBy = "variant",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<SellerProduct> sellerProducts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images = new ArrayList<>();
 }

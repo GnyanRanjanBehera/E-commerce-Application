@@ -16,20 +16,24 @@ import java.util.List;
 @Table(name = "category")
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "cate_id",nullable = false,unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cate_id", nullable = false, unique = true)
     private Long cateId;
 
-    @Column(name = "name",nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private Boolean isActive = true;
 
-    @ManyToOne
-    private Category parentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Category parent;
 
-    @OneToMany(mappedBy ="category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> products=new ArrayList<>();
+    @OneToMany(mappedBy = "parent")
+    private List<Category> children = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    private List<Product> products = new ArrayList<>();
 
 }
