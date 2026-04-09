@@ -5,7 +5,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
-public class Review {
+public class ProductReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

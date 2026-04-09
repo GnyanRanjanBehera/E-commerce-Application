@@ -4,6 +4,7 @@ package com.ecommerce.ecommerce_product_service.domains.enities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,12 @@ public class Category {
     @Column(name = "is_active")
     private Boolean isActive = true;
 
+    @Column(name = "created_at",nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at",nullable = false)
+    private LocalDateTime updatedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
@@ -35,5 +42,16 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();
+
+    @PrePersist
+    protected void onCreate(){
+        this.createdAt=LocalDateTime.now();
+        this.updatedAt=LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected  void onUpdate(){
+        this.updatedAt=LocalDateTime.now();
+    }
 
 }

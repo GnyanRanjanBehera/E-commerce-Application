@@ -1,8 +1,6 @@
 package com.ecommerce.ecommerce_product_service.domains.enities;
-
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +45,7 @@ public class Product {
     private List<ProductVariant> variants = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<Review> reviews = new ArrayList<>();
+    private List<ProductReview> reviews = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
