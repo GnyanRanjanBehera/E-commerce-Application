@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -20,7 +22,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto addCategory(String name, Long parentId) {
-
         CategoryDto categoryDto = CategoryDto.builder().name(name)
                 .isActive(true)
                 .build();
@@ -37,5 +38,20 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto fetchCategoryById(Long cateId) {
         Category category = categoryRepo.findById(cateId).orElseThrow(BadApiRequestException::new);
         return mapper.map(category, CategoryDto.class);
+    }
+
+    @Override
+    public CategoryDto updateCategory(Long cateId, String name, Long parentId, Boolean isActive) {
+        Category category = categoryRepo.findById(cateId).orElseThrow(() -> new ResourceNotFoundException("category not found"));
+        if(!name.isEmpty()){
+            category.setName(name);
+        }
+
+        if(parentId!=null){
+            Category parent = categoryRepo.findById(parentId).orElseThrow(() -> new ResourceNotFoundException("you parent id not found"));
+            category.setParent(parent);
+        }
+
+        return null;
     }
 }

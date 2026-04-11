@@ -1,6 +1,4 @@
 package com.ecommerce.ecommerce_product_service.controllers;
-
-
 import com.ecommerce.ecommerce_product_service.domains.dtos.CategoryDto;
 import com.ecommerce.ecommerce_product_service.services.CategoryService;
 import lombok.RequiredArgsConstructor;

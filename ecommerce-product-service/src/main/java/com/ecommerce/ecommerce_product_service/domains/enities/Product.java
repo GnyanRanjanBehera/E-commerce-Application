@@ -7,7 +7,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 @Getter
 @Setter

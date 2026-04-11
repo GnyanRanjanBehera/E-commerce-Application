@@ -1,10 +1,15 @@
 package com.ecommerce.ecommerce_product_service.domains.enities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.*;
 
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
+@Entity
+@Table(name = "product_image")
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
