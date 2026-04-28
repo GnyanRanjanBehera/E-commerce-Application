@@ -25,8 +25,6 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepo categoryRepo;
     private final ModelMapper mapper;
 
-
-
     @Override
     public CategoryDto addCategory(String name, Long parentId) {
         CategoryDto categoryDto = CategoryDto.builder().name(name)
