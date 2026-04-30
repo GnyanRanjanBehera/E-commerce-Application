@@ -30,11 +30,9 @@ public class ProductVariant {
     private String size;
 
     @Column(name = "created_at",nullable = false)
-    @Enumerated(EnumType.STRING)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at",nullable = false)
-    @Enumerated(EnumType.STRING)
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
