@@ -57,7 +57,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
 
     @Override
     public List<ProductVariantResponse> getVariantsByProduct(Long productId) {
-        return variantRepo.findByProductProductId(productId).stream().map(this::mapToResponse).toList();
+        return variantRepo.findByProductProdId(productId).stream().map(this::mapToResponse).toList();
 
     }
 
