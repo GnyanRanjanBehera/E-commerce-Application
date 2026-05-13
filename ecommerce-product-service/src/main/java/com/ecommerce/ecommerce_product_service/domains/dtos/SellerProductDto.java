@@ -13,7 +13,7 @@ public class SellerProductDto {
 
     private Long id;
 
-    private Integer seller;
+    private Integer sellerId;
 
     private ProductVariant variant;
 

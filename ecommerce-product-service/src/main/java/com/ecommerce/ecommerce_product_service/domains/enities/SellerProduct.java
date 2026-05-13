@@ -18,7 +18,7 @@ public class SellerProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer seller;
+    private Integer sellerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "variant_id", nullable = false)
